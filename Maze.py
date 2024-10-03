@@ -7,9 +7,11 @@ class COLOR(Enum):
     #setup theme
     dark=('gray11','white')
     light=('white','black')
+    #color goal
     green=('green4','pale green')
+    #color agent
     pink = ('#FF6A88', '#FF99AC')
-#tao poiter
+#create agent
 class agent:
     def __init__(self,parentMaze,x=None,y=None,shape='square',goal=None,filled=False,footprints=False,color:COLOR=COLOR.pink):
         '''
@@ -210,15 +212,9 @@ class textLabel:
     This class is to create Text Label to show different results on the window.
     '''
     def __init__(self,parentMaze,title,value):
-        '''
-        parentmaze-->   The maze on which Label will be displayed.
-        title-->        The title of the value to be displayed
-        value-->        The value to be displayed
-        '''
         self.title=title
         self._value=value
         self._parentMaze=parentMaze
-        # self._parentMaze._labels.append(self)
         self._var=None
         self.drawLabel()
     @property
@@ -239,24 +235,6 @@ class maze:
     This is the main class to create maze.
     '''
     def __init__(self,rows=100,cols=100):
-        '''
-        rows--> No. of rows of the maze
-        cols--> No. of columns of the maze
-        Need to pass just the two arguments. The rest will be assigned automatically
-        maze_map--> Will be set to a Dicationary. Keys will be cells and
-                    values will be another dictionary with keys=['E','W','N','S'] for
-                    East West North South and values will be 0 or 1. 0 means that 
-                    direction(EWNS) is blocked. 1 means that direction is open.
-        grid--> A list of all cells
-        path--> Shortest path from start(bottom right) to goal(by default top left)
-                It will be a dictionary
-        _win,_cell_width,_canvas -->    _win and )canvas are for Tkinter window and canvas
-                                        _cell_width is cell width calculated automatically
-        _agents-->  A list of aganets on the maze
-        markedCells-->  Will be used to mark some particular cell during
-                        path trace by the agent.
-        _
-        '''
         self.rows=rows
         self.cols=cols
         self.maze_map={}
@@ -303,18 +281,6 @@ class maze:
             self.maze_map[x+1,y]['N']=1
     
     def CreateMaze(self,x=random.randint(1,100),y=random.randint(1,100),pattern=None,loopPercent=0,saveMaze=False,loadMaze=None,theme:COLOR=COLOR.dark):
-        '''
-        One very important function to create a Random Maze
-        pattern-->  It can be 'v' for vertical or 'h' for horizontal
-                    Just the visual look of the maze will be more vertical/horizontal
-                    passages will be there.
-        loopPercent-->  0 means there will be just one path from start to goal (perfect maze)
-                        Higher value means there will be multiple paths (loops)
-                        Higher the value (max 100) more will be the loops
-        saveMaze--> To save the generated Maze as CSV file for future reference.
-        loadMaze--> Provide the CSV file to generate a desried maze
-        theme--> Dark or Light
-        '''
         _stack=[]
         _closed=[]
         self.theme=theme
@@ -378,14 +344,6 @@ class maze:
                         ans= True
             return ans
         def BFS(cell):
-            '''
-            Breadth First Search
-            To generate the shortest path.
-            This will be used only when there are multiple paths (loopPercent>0) or
-            Maze is loaded from a CSV file.
-            If a perfect maze is generated and without the load file, this method will
-            not be used since the Maze generation will calculate the path.
-            '''
             frontier = deque()
             frontier.append(cell)
             path = {}
@@ -619,11 +577,6 @@ class maze:
                         l=self._canvas.create_line(y, x + w, y + w, x + w,width=2,fill=theme.value[1],tag='line')
 
     def _redrawCell(self,x,y,theme):
-        '''
-        To redraw a cell.
-        With Full sized square agent, it can overlap with maze lines
-        So the cell is redrawn so that cell lines are on top
-        '''
         w=self._cell_width
         cell=(x,y)
         x=x*w-w+self._LabWidth
