@@ -6,6 +6,7 @@ from DFS import DFS
 m=maze(100,100)
 m.CreateMaze(loopPercent=100)
 
+# path=BFS(m)
 path=DFS(m)
 
 a=agent(m,footprints=True,filled=True)

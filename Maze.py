@@ -473,7 +473,6 @@ class maze:
                     c[0]=int(c[0].lstrip('('))
                     c[1]=int(c[1].rstrip(')'))
                     self.maze_map[tuple(c)]={'E':int(i[1]),'W':int(i[2]),'N':int(i[3]),'S':int(i[4])}
-            self.path=BFS((self.rows,self.cols))
         self._drawMaze(self.theme)
         agent(self,*self._goal,shape='square',filled=True,color=COLOR.green)
         if saveMaze:
