@@ -4,38 +4,14 @@ from enum import Enum
 from collections import deque
 
 class COLOR(Enum):
-    #setup theme
     dark=('gray11','white')
     light=('white','black')
-    #color goal
     green=('green4','pale green')
-    #color agent
     pink = ('#FF6A88', '#FF99AC')
 #create agent
 class agent:
-    def __init__(self,parentMaze,x=None,y=None,shape='square',goal=None,filled=False,footprints=False,color:COLOR=COLOR.pink):
-        '''
-        parentmaze-->  The maze on which agent is placed.
-        x,y-->  Position of the agent i.e. cell inside which agent will be placed
-                Default value is the lower right corner of the Maze
-        shape-->    square or arrow (as string)
-        goal-->     Default value is the goal of the Maze
-        filled-->   For square shape, filled=False is a smaller square
-                    While filled =True is a biiger square filled in complete Cell
-                    This option doesn't matter for arrow shape.
-        footprints-->   When the aganet will move to some other cell, its footprints
-                        on the previous cell can be placed by making this True
-        color-->    Color of the agent.
-        
-        _orient-->  You don't need to pass this
-                    It is used with arrow shape agent to shows it turning
-        position--> You don't need to pass this
-                    This is the cell (x,y)
-        _head-->    You don't need to pass this
-                    It is actually the agent.
-        _body-->    You don't need to pass this
-                    Tracks the body of the agent (the previous positions of it)
-        '''
+    def __init__(self,parentMaze,x=None,y=None,goal=None,filled=False,footprints=True,color:COLOR=COLOR.pink):
+       
         self._parentMaze=parentMaze
         self.color=color
         if(isinstance(color,str)):
@@ -44,7 +20,7 @@ class agent:
             else:
                 raise ValueError(f'{color} is not a valid COLOR!')
         self.filled=filled
-        self.shape=shape
+        self.shape='square'
         self._orient=0
         if x is None:x=parentMaze.rows
         if y is None:y=parentMaze.cols
@@ -74,61 +50,32 @@ class agent:
         w=self._parentMaze._cell_width
         x=self.x*w-w+self._parentMaze._LabWidth
         y=self.y*w-w+self._parentMaze._LabWidth
-        if self.shape=='square':
-            if self.filled:
-                self._coord=(y, x,y + w, x + w)
-            else:
-                self._coord=(y + w/2.5, x + w/2.5,y + w/2.5 +w/4, x + w/2.5 +w/4)
+        if self.filled:
+            self._coord=(y, x,y + w, x + w)
         else:
-            self._coord=(y + w/2, x + 3*w/9,y + w/2, x + 3*w/9+w/4)
+            self._coord=(y + w/2.5, x + w/2.5,y + w/2.5 +w/4, x + w/2.5 +w/4)
 
         if(hasattr(self,'_head')):
             if self.footprints is False:
                 self._parentMaze._canvas.delete(self._head)
             else:
-                if self.shape=='square':
-                    self._parentMaze._canvas.itemconfig(self._head, fill=self.color.value[1],outline="")
-                    self._parentMaze._canvas.tag_raise(self._head)
-                    try:
-                        self._parentMaze._canvas.tag_lower(self._head,'ov')
-                    except:
-                        pass
-                    if self.filled:
-                        lll=self._parentMaze._canvas.coords(self._head)
-                        oldcell=(round(((lll[1]-26)/self._parentMaze._cell_width)+1),round(((lll[0]-26)/self._parentMaze._cell_width)+1))
-                        self._parentMaze._redrawCell(*oldcell,self._parentMaze.theme)
-                else:
-                    self._parentMaze._canvas.itemconfig(self._head, fill=self.color.value[1])#,outline='gray70')
-                    self._parentMaze._canvas.tag_raise(self._head)
-                    try:
-                        self._parentMaze._canvas.tag_lower(self._head,'ov')
-                    except:
-                        pass
+                self._parentMaze._canvas.itemconfig(self._head, fill=self.color.value[1],outline="")
+                self._parentMaze._canvas.tag_raise(self._head)
+                try:
+                    self._parentMaze._canvas.tag_lower(self._head,'ov')
+                except:
+                    pass
+                if self.filled:
+                    lll=self._parentMaze._canvas.coords(self._head)
+                    oldcell=(round(((lll[1]-26)/self._parentMaze._cell_width)+1),round(((lll[0]-26)/self._parentMaze._cell_width)+1))
+                    self._parentMaze._redrawCell(*oldcell,self._parentMaze.theme)
                 self._body.append(self._head)
             if not self.filled or self.shape=='arrow':
-                if self.shape=='square':
-                    self._head=self._parentMaze._canvas.create_rectangle(*self._coord,fill=self.color.value[0],outline='') #stipple='gray75'
-                    try:
-                        self._parentMaze._canvas.tag_lower(self._head,'ov')
-                    except:
-                        pass
-                else:
-                    self._head=self._parentMaze._canvas.create_line(*self._coord,fill=self.color.value[0],arrow=FIRST,arrowshape=(3/10*w,4/10*w,4/10*w))#,outline=self.color.name)
-                    try:
-                        self._parentMaze._canvas.tag_lower(self._head,'ov')
-                    except:
-                        pass
-                    o=self._orient%4
-                    if o==1:
-                        self._RCW()
-                        self._orient-=1
-                    elif o==3:
-                        self._RCCW()
-                        self._orient+=1
-                    elif o==2:
-                        self._RCCW()
-                        self._RCCW()
-                        self._orient+=2
+                self._head=self._parentMaze._canvas.create_rectangle(*self._coord,fill=self.color.value[0],outline='') #stipple='gray75'
+                try:
+                    self._parentMaze._canvas.tag_lower(self._head,'ov')
+                except:
+                    pass
             else:
                 self._head=self._parentMaze._canvas.create_rectangle(*self._coord,fill=self.color.value[0],outline='')#stipple='gray75'
                 try:
@@ -193,20 +140,6 @@ class agent:
         self._orient=(self._orient+1)%4
 
 
-    def moveRight(self,event):
-        if self._parentMaze.maze_map[self.x,self.y]['E']==True:
-            self.y=self.y+1
-    def moveLeft(self,event):
-        if self._parentMaze.maze_map[self.x,self.y]['W']==True:
-            self.y=self.y-1
-    def moveUp(self,event):
-        if self._parentMaze.maze_map[self.x,self.y]['N']==True:
-            self.x=self.x-1
-            self.y=self.y
-    def moveDown(self,event):
-        if self._parentMaze.maze_map[self.x,self.y]['S']==True:
-            self.x=self.x+1
-            self.y=self.y
 class textLabel:
     '''
     This class is to create Text Label to show different results on the window.
@@ -474,7 +407,7 @@ class maze:
                     c[1]=int(c[1].rstrip(')'))
                     self.maze_map[tuple(c)]={'E':int(i[1]),'W':int(i[2]),'N':int(i[3]),'S':int(i[4])}
         self._drawMaze(self.theme)
-        agent(self,*self._goal,shape='square',filled=True,color=COLOR.green)
+        agent(self,*self._goal,filled=True,color=COLOR.green)
         if saveMaze:
             dt_string = datetime.datetime.now().strftime("%Y-%m-%d--%H-%M-%S")
             with open(f'maze--{dt_string}.csv','w',newline='') as f:
@@ -496,14 +429,12 @@ class maze:
         
         self._LabWidth=26 # Space from the top for Labels
         self._win=Tk()
-        self._win.state('zoomed')
-        self._win.title('PYTHON MAZE WORLD by Learning Orbis')
-        
-        scr_width=self._win.winfo_screenwidth()
+        self._win.title('Nhom 5')
+        scr_width=self._win.winfo_screenheight()
         scr_height=self._win.winfo_screenheight()
         self._win.geometry(f"{scr_width}x{scr_height}+0+0")
         self._canvas = Canvas(width=scr_width, height=scr_height, bg=theme.value[0]) # 0,0 is top left corner
-        self._canvas.pack(expand=YES, fill=BOTH)
+        self._canvas.pack(expand=YES, fill=BOTH) 
         # Some calculations for calculating the width of the maze cell
         k=3.25
         if self.rows>=95 and self.cols>=95:
@@ -550,26 +481,6 @@ class maze:
             self._canvas.create_line(y, x, y + w, x,width=2,fill=theme.value[1])
         if self.maze_map[cell]['S']==False:
             self._canvas.create_line(y, x + w, y + w, x + w,width=2,fill=theme.value[1])
-
-    def enableArrowKey(self,a):
-        '''
-        To control an agent a with Arrow Keys
-        '''
-        self._win.bind('<Left>',a.moveLeft)
-        self._win.bind('<Right>',a.moveRight)
-        self._win.bind('<Up>',a.moveUp)
-        self._win.bind('<Down>',a.moveDown)
-    
-    def enableWASD(self,a):
-        '''
-        To control an agent a with keys W,A,S,D
-        '''
-        self._win.bind('<a>',a.moveLeft)
-        self._win.bind('<d>',a.moveRight)
-        self._win.bind('<w>',a.moveUp)
-        self._win.bind('<s>',a.moveDown)
-
-
 
     _tracePathList=[]
     def _tracePathSingle(self,a,p,kill,showMarked,delay):
@@ -654,28 +565,7 @@ class maze:
                     
                     self._win.after(300, killAgent,a)         
                 return
-            if a.shape=='arrow':
-                old=(a.x,a.y)
-                new=p[0]
-                o=a._orient
-                if new=='N': mov=0
-                elif new=='E': mov=1
-                elif new=='S': mov=2
-                elif new=='W': mov=3
-                
-                if mov-o==2:
-                    a._RCW()
-
-                if mov-o==-2:
-                    a._RCW()
-                if mov-o==1:
-                    a._RCW()
-                if mov-o==-1:
-                    a._RCCW()
-                if mov-o==3:
-                    a._RCCW()
-                if mov-o==-3:
-                    a._RCW()
+            
             if a.shape=='square' or mov==o:    
                 move=p[0]
                 if move=='E':
@@ -708,44 +598,8 @@ class maze:
                 if kill:                    
                     self._win.after(300, killAgent,a)  
                 return
-            if a.shape=='arrow':
-                old=(a.x,a.y)
-                new=p[0]
-                o=a._orient
-                
-                if old!=new:
-                    if old[0]==new[0]:
-                        if old[1]>new[1]:
-                            mov=3#'W' #3
-                        else:
-                            mov=1#'E' #1
-                    else:
-                        if old[0]>new[0]:
-                            mov=0#'N' #0
-
-                        else:
-                            mov=2#'S' #2
-                    if mov-o==2:
-                        a._RCW()
-
-                    elif mov-o==-2:
-                        a._RCW()
-                    elif mov-o==1:
-                        a._RCW()
-                    elif mov-o==-1:
-                        a._RCCW()
-                    elif mov-o==3:
-                        a._RCCW()
-                    elif mov-o==-3:
-                        a._RCW()
-                    elif mov==o:
-                        a.x,a.y=p[0]
-                        del p[0]
-                else:
-                    del p[0]
-            else:    
-                a.x,a.y=p[0]
-                del p[0]
+            a.x,a.y=p[0]
+            del p[0]
 
         self._win.after(delay, self._tracePathSingle,a,p,kill,showMarked,delay)    
 

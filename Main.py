@@ -7,7 +7,7 @@ m=maze(100,100)
 m.CreateMaze(loopPercent=100)
 
 # path=BFS(m)
-path=DFS(m)
+path=BFS(m)
 
 a=agent(m,footprints=True,filled=True)
 
