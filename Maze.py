@@ -230,47 +230,15 @@ class maze:
                             i+=1
                         if i==len(notPathCells):
                             break
-        else:
-            # Load maze from CSV file
-            with open(loadMaze,'r') as f:
-                last=list(f.readlines())[-1]
-                c=last.split(',')
-                c[0]=int(c[0].lstrip('"('))
-                c[1]=int(c[1].rstrip(')"'))
-                self.rows=c[0]
-                self.cols=c[1]
-                self.grid=[]
-
-            with open(loadMaze,'r') as f:
-                r=csv.reader(f)
-                next(r)
-                for i in r:
-                    c=i[0].split(',')
-                    c[0]=int(c[0].lstrip('('))
-                    c[1]=int(c[1].rstrip(')'))
-                    self.maze_map[tuple(c)]={'E':int(i[1]),'W':int(i[2]),'N':int(i[3]),'S':int(i[4])}
         self._drawMaze(self.theme)
         agent(self,*self._goal,filled=True,color=COLOR.green)
-        if saveMaze:
-            dt_string = datetime.datetime.now().strftime("%Y-%m-%d--%H-%M-%S")
-            with open(f'maze--{dt_string}.csv','w',newline='') as f:
-                writer=csv.writer(f)
-                writer.writerow(['  cell  ','E','W','N','S'])
-                for k,v in self.maze_map.items():
-                    entry=[k]
-                    for i in v.values():
-                        entry.append(i)
-                    writer.writerow(entry)
-                f.seek(0, os.SEEK_END)
-                f.seek(f.tell()-2, os.SEEK_SET)
-                f.truncate()
-
+      
     def _drawMaze(self,theme):
         '''
         Creation of Tkinter window and maze lines
         '''
         
-        self._LabWidth=26 # Space from the top for Labels
+        self._LabWidth= 26 # Space from the top for Labels
         self._win=Tk()
         self._win.title('Nhom 5')
         scr_width=self._win.winfo_screenheight()
@@ -360,42 +328,7 @@ class maze:
             if(len(p)==0):
                 del maze._tracePathList[0][0][a]
                 return
-            if a.shape=='arrow':
-                old=(a.x,a.y)
-                new=p[(a.x,a.y)]
-                o=a._orient
-                
-                if old!=new:
-                    if old[0]==new[0]:
-                        if old[1]>new[1]:
-                            mov=3#'W' #3
-                        else:
-                            mov=1#'E' #1
-                    else:
-                        if old[0]>new[0]:
-                            mov=0#'N' #0
-
-                        else:
-                            mov=2#'S' #2
-                    if mov-o==2:
-                        a._RCW()
-
-                    if mov-o==-2:
-                        a._RCW()
-                    if mov-o==1:
-                        a._RCW()
-                    if mov-o==-1:
-                        a._RCCW()
-                    if mov-o==3:
-                        a._RCCW()
-                    if mov-o==-3:
-                        a._RCW()
-                    if mov==o:
-                        a.x,a.y=p[(a.x,a.y)]
-                else:
-                    del p[(a.x,a.y)]
-            else:    
-                a.x,a.y=p[(a.x,a.y)]
+            a.x,a.y=p[(a.x,a.y)]
         # If path is provided as String
         if (type(p)==str):
             if(len(p)==0):
@@ -409,7 +342,7 @@ class maze:
                     self._win.after(300, killAgent,a)         
                 return
             
-            if a.shape=='square' or mov==o:    
+            if mov==o:    
                 move=p[0]
                 if move=='E':
                     if a.y+1<=self.cols:
