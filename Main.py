@@ -1,4 +1,3 @@
-
 from Maze import maze,COLOR,agent, textLabel
 from BFS import BFS
 from DFS import DFS
