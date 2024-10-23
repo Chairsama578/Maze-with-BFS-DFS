@@ -1,22 +1,21 @@
-import random,datetime,csv,os
 from tkinter import *
 from enum import Enum
-from collections import deque
+from collections import *
 from Color import COLOR
+from Maze import *
 
 #create agent
 class agent:
-    def __init__(self,parentMaze,x=None,y=None,goal=None,filled=False,footprints=True, color:COLOR=COLOR.pink):
+    def __init__(self,parentMaze,x=None,y=None,goal=None,color:COLOR=COLOR.pink):
        
         self._parentMaze=parentMaze
         self.color=color
+        footprints=True
         if(isinstance(color,str)):
             if(color in COLOR.__members__):
                 self.color=COLOR[color]
             else:
                 raise ValueError(f'{color} is not a valid COLOR!')
-        self.filled=filled
-        self.shape='square'
         self._orient=0
         if x is None:x=parentMaze.rows
         if y is None:y=parentMaze.cols
@@ -46,10 +45,7 @@ class agent:
         w=self._parentMaze._cell_width
         x=self.x*w-w+self._parentMaze._LabWidth
         y=self.y*w-w+self._parentMaze._LabWidth
-        if self.filled:
-            self._coord=(y, x,y + w, x + w)
-        else:
-            self._coord=(y + w/2.5, x + w/2.5,y + w/2.5 +w/4, x + w/2.5 +w/4)
+        self._coord=(y, x,y + w, x + w)
 
         if(hasattr(self,'_head')):
             if self.footprints is False:
@@ -61,24 +57,16 @@ class agent:
                     self._parentMaze._canvas.tag_lower(self._head,'ov')
                 except:
                     pass
-                if self.filled:
-                    lll=self._parentMaze._canvas.coords(self._head)
-                    oldcell=(round(((lll[1]-26)/self._parentMaze._cell_width)+1),round(((lll[0]-26)/self._parentMaze._cell_width)+1))
-                    self._parentMaze._redrawCell(*oldcell,self._parentMaze.theme)
+                lll=self._parentMaze._canvas.coords(self._head)
+                oldcell=(round(((lll[1]-26)/self._parentMaze._cell_width)+1),round(((lll[0]-26)/self._parentMaze._cell_width)+1))
+                self._parentMaze._redrawCell(*oldcell,self._parentMaze.theme)
                 self._body.append(self._head)
-            if not self.filled or self.shape=='arrow':
-                self._head=self._parentMaze._canvas.create_rectangle(*self._coord,fill=self.color.value[0],outline='') #stipple='gray75'
-                try:
-                    self._parentMaze._canvas.tag_lower(self._head,'ov')
-                except:
+            self._head=self._parentMaze._canvas.create_rectangle(*self._coord,fill=self.color.value[0],outline='')#stipple='gray75'
+            try:
+                self._parentMaze._canvas.tag_lower(self._head,'ov')
+            except:
                     pass
-            else:
-                self._head=self._parentMaze._canvas.create_rectangle(*self._coord,fill=self.color.value[0],outline='')#stipple='gray75'
-                try:
-                    self._parentMaze._canvas.tag_lower(self._head,'ov')
-                except:
-                        pass
-                self._parentMaze._redrawCell(self.x,self.y,theme=self._parentMaze.theme)
+            self._parentMaze._redrawCell(self.x,self.y,theme=self._parentMaze.theme)
         else:
             self._head=self._parentMaze._canvas.create_rectangle(*self._coord,fill=self.color.value[0],outline='')#stipple='gray75'
             try:

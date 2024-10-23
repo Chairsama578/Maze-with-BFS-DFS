@@ -4,8 +4,10 @@ def BFS(m):
     frontier=[start]
     explored=[start]
     bfsPath={}
+    search = []
     while len(frontier)>0:
         currCell=frontier.pop(0)
+        search.append(currCell)
         if currCell==m._goal:
             break
         for d in 'ESNW':
@@ -28,4 +30,4 @@ def BFS(m):
     while cell!=start:
         fwdPath[bfsPath[cell]]=cell
         cell=bfsPath[cell]
-    return fwdPath
+    return search, fwdPath

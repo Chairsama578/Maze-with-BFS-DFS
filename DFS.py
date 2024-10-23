@@ -5,8 +5,10 @@ def DFS(m):
     explored=[start]
     frontier=[start]
     dfsPath={}
+    search = []
     while len(frontier)>0:
         currCell=frontier.pop()
+        search.append(currCell)
         if currCell==m._goal:
             break
         for d in 'ESNW':
@@ -29,4 +31,4 @@ def DFS(m):
     while cell!=start:
         fwdPath[dfsPath[cell]]=cell
         cell=dfsPath[cell]
-    return fwdPath
+    return search, fwdPath

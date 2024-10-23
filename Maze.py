@@ -2,8 +2,8 @@ import random,datetime,csv,os
 from tkinter import *
 from enum import Enum
 from collections import deque
+from Agent import agent
 from Color import *
-from Agent import *
 from TextLabel import *
 
 class maze: 
@@ -56,11 +56,13 @@ class maze:
         if x+1<=self.rows:
             self.maze_map[x+1,y]['N']=1
     
-    def CreateMaze(self,x=random.randint(1,100),y=random.randint(1,100),pattern=None,loopPercent=0,theme:COLOR=COLOR.dark):
+    def CreateMaze(self,loopPercent=0,theme:COLOR=COLOR.dark):
         _stack=[]
         _closed=[]
         self.theme=theme
         # goal random
+        x=random.randint(1,self.rows)
+        y=random.randint(1,self.cols)
         self._goal=(x,y)
         if(isinstance(theme,str)):
             if(theme in COLOR.__members__):
@@ -125,10 +127,6 @@ class maze:
         _stack.append((x,y))
         _closed.append((x,y))
         biasLength=2 # if pattern is 'v' or 'h'
-        if(pattern is not None and pattern.lower()=='h'):
-            biasLength=max(self.cols//10,2)
-        if(pattern is not None and pattern.lower()=='v'):
-            biasLength=max(self.rows//10,2)
         bias=0
 
         while len(_stack) > 0:
@@ -143,16 +141,7 @@ class maze:
             if (x-1, y ) not in _closed and (x-1 , y) in self.grid:
                 cell.append("N") 
             if len(cell) > 0:    
-                if pattern is not None and pattern.lower()=='h' and bias<=biasLength:
-                    if('E' in cell or 'W' in cell):
-                        if 'S' in cell:cell.remove('S')
-                        if 'N' in cell:cell.remove('N')
-                elif pattern is not None and pattern.lower()=='v' and bias<=biasLength:
-                    if('N' in cell or 'S' in cell):
-                        if 'E' in cell:cell.remove('E')
-                        if 'W' in cell:cell.remove('W')
-                else:
-                    bias=0
+                bias=0
                 current_cell = (random.choice(cell))
                 if current_cell == "E":
                     self._Open_East(x,y)
@@ -232,7 +221,7 @@ class maze:
                     if i==len(notPathCells):
                         break
         self._drawMaze(self.theme)
-        agent(self,*self._goal,filled=True,color=COLOR.green)
+        agent(self,*self._goal,color=COLOR.red)
       
     def _drawMaze(self,theme):
         '''
@@ -299,14 +288,7 @@ class maze:
         '''
         An interal method to help tracePath method for tracing a path by agent.
         '''
-        
-        def killAgent(a):
-            '''
-            if the agent should be killed after it reaches the Goal or completes the path
-            '''
-            for i in range(len(a._body)):
-                self._canvas.delete(a._body[i])
-            self._canvas.delete(a._head) 
+         
         w=self._cell_width
         if((a.x,a.y) in self.markCells and showMarked):
             w=self._cell_width
@@ -322,7 +304,7 @@ class maze:
                 if len(maze._tracePathList)>0:
                     self.tracePath(maze._tracePathList[0][0],kill=maze._tracePathList[0][1],delay=maze._tracePathList[0][2])
             if kill:
-                self._win.after(300, killAgent,a)         
+                self._win.after(300,a)         
             return
         # If path is provided as Dictionary
         if(type(p)==dict):
@@ -343,27 +325,6 @@ class maze:
                     self._win.after(300, killAgent,a)         
                 return
             
-            if mov==o:    
-                move=p[0]
-                if move=='E':
-                    if a.y+1<=self.cols:
-                        a.y+=1
-                elif move=='W':
-                    if a.y-1>0:
-                        a.y-=1
-                elif move=='N':
-                    if a.x-1>0:
-                        a.x-=1
-                        a.y=a.y
-                elif move=='S':
-                    if a.x+1<=self.rows:
-                        a.x+=1
-                        a.y=a.y
-                elif move=='C':
-                    a._RCW()
-                elif move=='A':
-                    a._RCCW()
-                p=p[1:]
         # If path is provided as List
         if (type(p)==list):
             if(len(p)==0):
