@@ -56,10 +56,11 @@ class maze:
         if x+1<=self.rows:
             self.maze_map[x+1,y]['N']=1
     
-    def CreateMaze(self,x=random.randint(1,100),y=random.randint(1,100),pattern=None,loopPercent=0,saveMaze=False,loadMaze=None,theme:COLOR=COLOR.dark):
+    def CreateMaze(self,x=random.randint(1,100),y=random.randint(1,100),pattern=None,loopPercent=0,theme:COLOR=COLOR.dark):
         _stack=[]
         _closed=[]
         self.theme=theme
+        # goal random
         self._goal=(x,y)
         if(isinstance(theme,str)):
             if(theme in COLOR.__members__):
@@ -120,116 +121,116 @@ class maze:
                         ans= True
             return ans
         # if maze is to be generated randomly
-        if not loadMaze:
-            _stack.append((x,y))
-            _closed.append((x,y))
-            biasLength=2 # if pattern is 'v' or 'h'
-            if(pattern is not None and pattern.lower()=='h'):
-                biasLength=max(self.cols//10,2)
-            if(pattern is not None and pattern.lower()=='v'):
-                biasLength=max(self.rows//10,2)
-            bias=0
+       
+        _stack.append((x,y))
+        _closed.append((x,y))
+        biasLength=2 # if pattern is 'v' or 'h'
+        if(pattern is not None and pattern.lower()=='h'):
+            biasLength=max(self.cols//10,2)
+        if(pattern is not None and pattern.lower()=='v'):
+            biasLength=max(self.rows//10,2)
+        bias=0
 
-            while len(_stack) > 0:
-                cell = []
-                bias+=1
-                if(x , y +1) not in _closed and (x , y+1) in self.grid:
-                    cell.append("E")
-                if (x , y-1) not in _closed and (x , y-1) in self.grid:
-                    cell.append("W")
-                if (x+1, y ) not in _closed and (x+1 , y ) in self.grid:
-                    cell.append("S")
-                if (x-1, y ) not in _closed and (x-1 , y) in self.grid:
-                    cell.append("N") 
-                if len(cell) > 0:    
-                    if pattern is not None and pattern.lower()=='h' and bias<=biasLength:
-                        if('E' in cell or 'W' in cell):
-                            if 'S' in cell:cell.remove('S')
-                            if 'N' in cell:cell.remove('N')
-                    elif pattern is not None and pattern.lower()=='v' and bias<=biasLength:
-                        if('N' in cell or 'S' in cell):
-                            if 'E' in cell:cell.remove('E')
-                            if 'W' in cell:cell.remove('W')
-                    else:
-                        bias=0
-                    current_cell = (random.choice(cell))
-                    if current_cell == "E":
-                        self._Open_East(x,y)
-                        self.path[x, y+1] = x, y
-                        y = y + 1
-                        _closed.append((x, y))
-                        _stack.append((x, y))
-
-                    elif current_cell == "W":
-                        self._Open_West(x, y)
-                        self.path[x , y-1] = x, y
-                        y = y - 1
-                        _closed.append((x, y))
-                        _stack.append((x, y))
-
-                    elif current_cell == "N":
-                        self._Open_North(x, y)
-                        self.path[(x-1 , y)] = x, y
-                        x = x - 1
-                        _closed.append((x, y))
-                        _stack.append((x, y))
-
-                    elif current_cell == "S":
-                        self._Open_South(x, y)
-                        self.path[(x+1 , y)] = x, y
-                        x = x + 1
-                        _closed.append((x, y))
-                        _stack.append((x, y))
-
+        while len(_stack) > 0:
+            cell = []
+            bias+=1
+            if(x , y +1) not in _closed and (x , y+1) in self.grid:
+                cell.append("E")
+            if (x , y-1) not in _closed and (x , y-1) in self.grid:
+                cell.append("W")
+            if (x+1, y ) not in _closed and (x+1 , y ) in self.grid:
+                cell.append("S")
+            if (x-1, y ) not in _closed and (x-1 , y) in self.grid:
+                cell.append("N") 
+            if len(cell) > 0:    
+                if pattern is not None and pattern.lower()=='h' and bias<=biasLength:
+                    if('E' in cell or 'W' in cell):
+                        if 'S' in cell:cell.remove('S')
+                        if 'N' in cell:cell.remove('N')
+                elif pattern is not None and pattern.lower()=='v' and bias<=biasLength:
+                    if('N' in cell or 'S' in cell):
+                        if 'E' in cell:cell.remove('E')
+                        if 'W' in cell:cell.remove('W')
                 else:
-                    x, y = _stack.pop()
+                    bias=0
+                current_cell = (random.choice(cell))
+                if current_cell == "E":
+                    self._Open_East(x,y)
+                    self.path[x, y+1] = x, y
+                    y = y + 1
+                    _closed.append((x, y))
+                    _stack.append((x, y))
 
-            ## Multiple Path Loops
-            if loopPercent!=0:
-                
-                x,y=self.rows,self.cols
-                pathCells=[(x,y)]
-                while x!=self.rows or y!=self.cols:
-                    x,y=self.path[(x,y)]
-                    pathCells.append((x,y))
-                notPathCells=[i for i in self.grid if i not in pathCells]
-                random.shuffle(pathCells)
-                random.shuffle(notPathCells)
-                pathLength=len(pathCells)
-                notPathLength=len(notPathCells)
-                count1,count2=pathLength/3*loopPercent/100,notPathLength/3*loopPercent/100
-                
-                #remove blocks from shortest path cells
+                elif current_cell == "W":
+                    self._Open_West(x, y)
+                    self.path[x , y-1] = x, y
+                    y = y - 1
+                    _closed.append((x, y))
+                    _stack.append((x, y))
+
+                elif current_cell == "N":
+                    self._Open_North(x, y)
+                    self.path[(x-1 , y)] = x, y
+                    x = x - 1
+                    _closed.append((x, y))
+                    _stack.append((x, y))
+
+                elif current_cell == "S":
+                    self._Open_South(x, y)
+                    self.path[(x+1 , y)] = x, y
+                    x = x + 1
+                    _closed.append((x, y))
+                    _stack.append((x, y))
+
+            else:
+                x, y = _stack.pop()
+
+        ## Multiple Path Loops
+        if loopPercent!=0:
+            
+            x,y=self.rows,self.cols
+            pathCells=[(x,y)]
+            while x!=self.rows or y!=self.cols:
+                x,y=self.path[(x,y)]
+                pathCells.append((x,y))
+            notPathCells=[i for i in self.grid if i not in pathCells]
+            random.shuffle(pathCells)
+            random.shuffle(notPathCells)
+            pathLength=len(pathCells)
+            notPathLength=len(notPathCells)
+            count1,count2=pathLength/3*loopPercent/100,notPathLength/3*loopPercent/100
+            
+            #remove blocks from shortest path cells
+            count=0
+            i=0
+            while count<count1: #these many blocks to remove
+                if len(blockedNeighbours(pathCells[i]))>0:
+                    cell=random.choice(blockedNeighbours(pathCells[i]))
+                    if not isCyclic(cell,pathCells[i]):
+                        removeWallinBetween(cell,pathCells[i])
+                        count+=1
+                    i+=1
+                        
+                else:
+                    i+=1
+                if i==len(pathCells):
+                    break
+            #remove blocks from outside shortest path cells
+            if len(notPathCells)>0:
                 count=0
                 i=0
-                while count<count1: #these many blocks to remove
-                    if len(blockedNeighbours(pathCells[i]))>0:
-                        cell=random.choice(blockedNeighbours(pathCells[i]))
-                        if not isCyclic(cell,pathCells[i]):
-                            removeWallinBetween(cell,pathCells[i])
+                while count<count2: #these many blocks to remove
+                    if len(blockedNeighbours(notPathCells[i]))>0:
+                        cell=random.choice(blockedNeighbours(notPathCells[i]))
+                        if not isCyclic(cell,notPathCells[i]):
+                            removeWallinBetween(cell,notPathCells[i])
                             count+=1
                         i+=1
                             
                     else:
                         i+=1
-                    if i==len(pathCells):
+                    if i==len(notPathCells):
                         break
-                #remove blocks from outside shortest path cells
-                if len(notPathCells)>0:
-                    count=0
-                    i=0
-                    while count<count2: #these many blocks to remove
-                        if len(blockedNeighbours(notPathCells[i]))>0:
-                            cell=random.choice(blockedNeighbours(notPathCells[i]))
-                            if not isCyclic(cell,notPathCells[i]):
-                                removeWallinBetween(cell,notPathCells[i])
-                                count+=1
-                            i+=1
-                                
-                        else:
-                            i+=1
-                        if i==len(notPathCells):
-                            break
         self._drawMaze(self.theme)
         agent(self,*self._goal,filled=True,color=COLOR.green)
       

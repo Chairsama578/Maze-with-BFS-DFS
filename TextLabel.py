@@ -9,6 +9,7 @@ class textLabel:
     '''
     This class is to create Text Label to show different results on the window.
     '''
+
     def __init__(self,parentMaze,title,value):
         self.title=title
         self._value=value
@@ -22,6 +23,7 @@ class textLabel:
     def value(self,v):
         self._value=v
         self._var.set(f'{self.title} : {v}')
+    # Vẽ lable 
     def drawLabel(self):
         self._var = StringVar()
         self.lab = Label(self._parentMaze._canvas, textvariable=self._var, bg="white", fg="black",font=('Helvetica bold',12),relief=RIDGE)
