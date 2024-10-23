@@ -334,7 +334,7 @@ class maze:
                     if len(maze._tracePathList)>0:
                         self.tracePath(maze._tracePathList[0][0],kill=maze._tracePathList[0][1],delay=maze._tracePathList[0][2])
                 if kill:                    
-                    self._win.after(300, killAgent,a)  
+                    self._win.after(300,a)  
                 return
             a.x,a.y=p[0]
             del p[0]
