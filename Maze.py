@@ -1,8 +1,7 @@
-import random,datetime,csv,os
+import random
 from tkinter import *
-from enum import Enum
 from collections import deque
-from Agent import agent
+from Pel import pel
 from Color import *
 from TextLabel import *
 
@@ -17,8 +16,7 @@ class maze:
         self._cell_width=50  
         self._win=None 
         self._canvas=None
-        self._agents=[]
-        self.markCells=[]
+        self._pels=[]
 
     @property
     def grid(self):
@@ -63,17 +61,12 @@ class maze:
         x=random.randint(1,self.rows)
         y=random.randint(1,self.cols)
         while (TRUE):
-            if x!= 100 or y!=100: break
+            if x!= self.rows or y!= self.cols: break
             elif x == 100: x=random.randint(1,self.rows)
             elif y == 100: y=random.randint(1,self.cols)
             
         
         self._goal=(x,y)
-        if(isinstance(theme,str)):
-            if(theme in COLOR.__members__):
-                self.theme=COLOR[theme]
-            else:
-                raise ValueError(f'{theme} is not a valid theme COLOR!')
         def blockedNeighbours(cell):
             n=[]
             for d in self.maze_map[cell].keys():
@@ -220,20 +213,18 @@ class maze:
                     if i==len(notPathCells):
                         break
         self._drawMaze(self.theme)
-        agent(self,*self._goal,color=COLOR.red)
+        pel(self,*self._goal,color=COLOR.red)
       
     def _drawMaze(self,theme):
-        '''
-        Creation of Tkinter window and maze lines
-        '''
+        # Tao Tkinter 
         
-        self._LabWidth= 26 # Space from the top for Labels
+        self._LabWidth= 26
         self._win=Tk()
         self._win.title('Nhom 5')
         scr_width=self._win.winfo_screenheight()
         scr_height=self._win.winfo_screenheight()
         self._win.geometry(f"{scr_width}x{scr_height}+0+0")
-        self._canvas = Canvas(width=scr_width, height=scr_height, bg=theme.value[0]) # 0,0 is top left corner
+        self._canvas = Canvas(width=scr_width, height=scr_height, bg=theme.value[0]) 
         self._canvas.pack(expand=YES, fill=BOTH) 
         # Tính chiều rộng của mê cung
         k=3.25
@@ -283,27 +274,15 @@ class maze:
             self._canvas.create_line(y, x + w, y + w, x + w,width=2,fill=theme.value[1])
 
     _tracePathList=[]
-    def _tracePathSingle(self,a,p,kill,showMarked,delay):
-        '''
-        An interal method to help tracePath method for tracing a path by agent.
-        '''
-         
-        w=self._cell_width
-        if((a.x,a.y) in self.markCells and showMarked):
-            w=self._cell_width
-            x=a.x*w-w+self._LabWidth
-            y=a.y*w-w+self._LabWidth
-            self._canvas.create_oval(y + w/2.5+w/20, x + w/2.5+w/20,y + w/2.5 +w/4-w/20, x + w/2.5 +w/4-w/20,fill='red',outline='red',tag='ov')
-            self._canvas.tag_raise('ov')
+    def _tracePathSingle(self,a,p,delay):
        
         if (a.x,a.y)==(a.goal):
             del maze._tracePathList[0][0][a]
             if maze._tracePathList[0][0]=={}:
                 del maze._tracePathList[0]
                 if len(maze._tracePathList)>0:
-                    self.tracePath(maze._tracePathList[0][0],kill=maze._tracePathList[0][1],delay=maze._tracePathList[0][2])
-            if kill:
-                self._win.after(300,a)         
+                    self.tracePath(maze._tracePathList[0][0])
+                 
             return
         # If path is provided as Dictionary
         if(type(p)==dict):
@@ -311,19 +290,6 @@ class maze:
                 del maze._tracePathList[0][0][a]
                 return
             a.x,a.y=p[(a.x,a.y)]
-        # If path is provided as String
-        if (type(p)==str):
-            if(len(p)==0):
-                del maze._tracePathList[0][0][a]
-                if maze._tracePathList[0][0]=={}:
-                    del maze._tracePathList[0]
-                    if len(maze._tracePathList)>0:
-                        self.tracePath(maze._tracePathList[0][0],kill=maze._tracePathList[0][1],delay=maze._tracePathList[0][2])
-                if kill:
-                    
-                    self._win.after(300, killAgent,a)         
-                return
-            
         # If path is provided as List
         if (type(p)==list):
             if(len(p)==0):
@@ -331,20 +297,18 @@ class maze:
                 if maze._tracePathList[0][0]=={}:
                     del maze._tracePathList[0]
                     if len(maze._tracePathList)>0:
-                        self.tracePath(maze._tracePathList[0][0],kill=maze._tracePathList[0][1],delay=maze._tracePathList[0][2])
-                if kill:                    
-                    self._win.after(300,a)  
+                        self.tracePath(maze._tracePathList[0][0]) 
                 return
             a.x,a.y=p[0]
             del p[0]
 
-        self._win.after(delay, self._tracePathSingle,a,p,kill,showMarked,delay)    
+        self._win.after(delay, self._tracePathSingle,a,p,delay)    
 
-    def tracePath(self,d,kill=False,delay=300,showMarked=False):
-        self._tracePathList.append((d,kill,delay))
+    def tracePath(self,d, delay=300):
+        self._tracePathList.append((d,delay))
         if maze._tracePathList[0][0]==d: 
             for a,p in d.items():
                 if a.goal!=(a.x,a.y) and len(p)!=0:
-                    self._tracePathSingle(a,p,kill,showMarked,delay)
+                    self._tracePathSingle(a,p,delay)
     def run(self):
         self._win.mainloop()

@@ -1,31 +1,41 @@
-import random,datetime,csv,os
 from tkinter import *
 from enum import Enum
 from collections import deque
 from Color import *
-from Agent import *
+from Pel import *
+
 
 class textLabel:
-    '''
+    """
     This class is to create Text Label to show different results on the window.
-    '''
+    """
 
-    def __init__(self,parentMaze,title,value):
-        self.title=title
-        self._value=value
-        self._parentMaze=parentMaze
-        self._var=None
+    def __init__(self, parentMaze, title, value):
+        self.title = title
+        self._value = value
+        self._parentMaze = parentMaze
+        self._var = None
         self.drawLabel()
+
     @property
     def value(self):
         return self._value
+
     @value.setter
-    def value(self,v):
-        self._value=v
-        self._var.set(f'{self.title} : {v}')
-    # Vẽ lable 
+    def value(self, v):
+        self._value = v
+        self._var.set(f"{self.title} : {v}")
+
+    # Vẽ lable
     def drawLabel(self):
         self._var = StringVar()
-        self.lab = Label(self._parentMaze._canvas, textvariable=self._var, bg="white", fg="black",font=('Helvetica bold',12),relief=RIDGE)
-        self._var.set(f'{self.title} : {self.value}')
-        self.lab.pack(expand = True,side=LEFT,anchor=NW)
+        self.lab = Label(
+            self._parentMaze._canvas,
+            textvariable=self._var,
+            bg="white",
+            fg="black",
+            font=("Helvetica bold", 12),
+            relief=RIDGE,
+        )
+        self._var.set(f"{self.title} : {self.value}")
+        self.lab.pack(expand=True, side=LEFT, anchor=NW)
