@@ -7,9 +7,7 @@ from Color import *
 from TextLabel import *
 
 class maze: 
-    '''
-    This is the main class to create maze.
-    '''
+    # hàm chính của class maze
     def __init__(self,rows=100,cols=100):
         self.rows=rows
         self.cols=cols
@@ -37,21 +35,22 @@ class maze:
                 self.maze_map[x,y]={'E':0,'W':0,'N':0,'S':0}
                 x = x + 1 
     def _Open_East(self,x, y):
-        '''
-        To remove the East Wall of the cell
-        '''
+        # Xóa tường bên phải
         self.maze_map[x,y]['E']=1
         if y+1<=self.cols:
             self.maze_map[x,y+1]['W']=1
     def _Open_West(self,x, y):
+        # Xóa tường bên trái
         self.maze_map[x,y]['W']=1
         if y-1>0:
             self.maze_map[x,y-1]['E']=1
     def _Open_North(self,x, y):
+        # Xóa tường bên tren
         self.maze_map[x,y]['N']=1
         if x-1>0:
             self.maze_map[x-1,y]['S']=1
     def _Open_South(self,x, y):
+        # Xóa tường bên duoi
         self.maze_map[x,y]['S']=1
         if x+1<=self.rows:
             self.maze_map[x+1,y]['N']=1
@@ -60,9 +59,15 @@ class maze:
         _stack=[]
         _closed=[]
         self.theme=theme
-        # goal random
+        # Ngẫu nhiên vị trí của goal
         x=random.randint(1,self.rows)
         y=random.randint(1,self.cols)
+        while (TRUE):
+            if x!= 100 or y!=100: break
+            elif x == 100: x=random.randint(1,self.rows)
+            elif y == 100: y=random.randint(1,self.cols)
+            
+        
         self._goal=(x,y)
         if(isinstance(theme,str)):
             if(theme in COLOR.__members__):
@@ -83,9 +88,7 @@ class maze:
                         n.append((cell[0]+1,cell[1]))
             return n
         def removeWallinBetween(cell1,cell2):
-            '''
-            To remove wall in between two cells
-            '''
+            # xóa tường ở giữa 2 ô
             if cell1[0]==cell2[0]:
                 if cell1[1]==cell2[1]+1:
                     self.maze_map[cell1]['W']=1
@@ -101,9 +104,7 @@ class maze:
                     self.maze_map[cell1]['S']=1
                     self.maze_map[cell2]['N']=1
         def isCyclic(cell1,cell2):
-            '''
-            To avoid too much blank(clear) path.
-            '''
+            # kiểm tra đường dẫn giữa 2 ô
             ans=False
             if cell1[0]==cell2[0]:
                 if cell1[1]>cell2[1]: cell1,cell2=cell2,cell1
@@ -122,11 +123,9 @@ class maze:
                     if (cell1[0],cell1[1]-1) in self.grid and self.maze_map[(cell1[0],cell1[1]-1)]['S']==1:
                         ans= True
             return ans
-        # if maze is to be generated randomly
        
         _stack.append((x,y))
         _closed.append((x,y))
-        biasLength=2 # if pattern is 'v' or 'h'
         bias=0
 
         while len(_stack) > 0:
@@ -174,7 +173,7 @@ class maze:
             else:
                 x, y = _stack.pop()
 
-        ## Multiple Path Loops
+        # lặp để tạo nhiều đường dẫn
         if loopPercent!=0:
             
             x,y=self.rows,self.cols
@@ -189,10 +188,10 @@ class maze:
             notPathLength=len(notPathCells)
             count1,count2=pathLength/3*loopPercent/100,notPathLength/3*loopPercent/100
             
-            #remove blocks from shortest path cells
+            # Xóa các khối từ đường dẫn ngắn nhất
             count=0
             i=0
-            while count<count1: #these many blocks to remove
+            while count<count1: 
                 if len(blockedNeighbours(pathCells[i]))>0:
                     cell=random.choice(blockedNeighbours(pathCells[i]))
                     if not isCyclic(cell,pathCells[i]):
@@ -236,7 +235,7 @@ class maze:
         self._win.geometry(f"{scr_width}x{scr_height}+0+0")
         self._canvas = Canvas(width=scr_width, height=scr_height, bg=theme.value[0]) # 0,0 is top left corner
         self._canvas.pack(expand=YES, fill=BOTH) 
-        # Some calculations for calculating the width of the maze cell
+        # Tính chiều rộng của mê cung
         k=3.25
         if self.rows>=95 and self.cols>=95:
             k=0
@@ -252,7 +251,7 @@ class maze:
             k=3
         self._cell_width=round(min(((scr_height-self.rows-k*self._LabWidth)/(self.rows)),((scr_width-self.cols-k*self._LabWidth)/(self.cols)),90),3)
         
-        # Creating Maze lines
+        # Tạo dòng cho mê cung
         if self._win is not None:
             if self.grid is not None:
                 for cell in self.grid:

@@ -1,5 +1,3 @@
-from Maze import maze,agent,COLOR,textLabel
-
 def DFS(m):
     start=(m.rows,m.cols)
     explored=[start]
@@ -11,7 +9,7 @@ def DFS(m):
         search.append(currCell)
         if currCell==m._goal:
             break
-        for d in 'ESNW':
+        for d in 'WNSE':
             if m.maze_map[currCell][d]==True:
                 if d=='E':
                     childCell=(currCell[0],currCell[1]+1)
