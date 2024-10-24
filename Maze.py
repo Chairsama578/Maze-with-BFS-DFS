@@ -53,18 +53,15 @@ class maze:
         if x+1<=self.rows:
             self.maze_map[x+1,y]['N']=1
     
-    def CreateMaze(self,loopPercent=0,theme:COLOR=COLOR.dark):
+    def createMaze(self,loopPercent=0,theme:COLOR=COLOR.dark):
         _stack=[]
         _closed=[]
         self.theme=theme
         # Ngẫu nhiên vị trí của goal
-        x=random.randint(1,self.rows)
-        y=random.randint(1,self.cols)
         while (TRUE):
+            x = random.randint(1,self.rows)
+            y = random.randint(1,self.cols)
             if x!= self.rows or y!= self.cols: break
-            elif x == 100: x=random.randint(1,self.rows)
-            elif y == 100: y=random.randint(1,self.cols)
-            
         
         self._goal=(x,y)
         def blockedNeighbours(cell):
@@ -196,11 +193,11 @@ class maze:
                     i+=1
                 if i==len(pathCells):
                     break
-            #remove blocks from outside shortest path cells
+            
             if len(notPathCells)>0:
                 count=0
                 i=0
-                while count<count2: #these many blocks to remove
+                while count<count2: 
                     if len(blockedNeighbours(notPathCells[i]))>0:
                         cell=random.choice(blockedNeighbours(notPathCells[i]))
                         if not isCyclic(cell,notPathCells[i]):
@@ -258,7 +255,7 @@ class maze:
                         l=self._canvas.create_line(y, x, y + w, x,width=2,fill=theme.value[1],tag='line')
                     if self.maze_map[cell]['S']==False:
                         l=self._canvas.create_line(y, x + w, y + w, x + w,width=2,fill=theme.value[1],tag='line')
-
+    # Tạo cột cho mê cung
     def _redrawCell(self,x,y,theme):
         w=self._cell_width
         cell=(x,y)
@@ -284,13 +281,13 @@ class maze:
                     self.tracePath(maze._tracePathList[0][0])
                  
             return
-        # If path is provided as Dictionary
+        # Dành cho đường đi ngắn nhất
         if(type(p)==dict):
             if(len(p)==0):
                 del maze._tracePathList[0][0][a]
                 return
             a.x,a.y=p[(a.x,a.y)]
-        # If path is provided as List
+        # Danh cho đường đi tìm
         if (type(p)==list):
             if(len(p)==0):
                 del maze._tracePathList[0][0][a]

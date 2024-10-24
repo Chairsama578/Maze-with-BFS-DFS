@@ -1,6 +1,4 @@
 from tkinter import *
-from enum import Enum
-from collections import deque
 from Color import *
 from Pel import *
 
