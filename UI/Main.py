@@ -13,7 +13,7 @@ from Model.DFS import DFS
 m = maze(10, 10)
 
 # Tạo mê cung với phần trăm vòng lặp là 100%
-m.createMaze(loopPercent=100)
+m.createMaze(difficulty=100)
 
 # Thực hiện tìm kiếm theo DFS
 search, path = DFS(m)

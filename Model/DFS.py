@@ -1,33 +1,33 @@
 def DFS(m):
-    start = (m.rows, m.cols)
+    start = (m.numRow, m.numCol)
     visited = [start]
     stack = [start]
-    dfsPath = {}
+    path = {}
     search = []
     while len(stack) > 0:
         # xóa phần tử ở vị trí cuối
         currCell = stack.pop()
         search.append(currCell)
-        if currCell == m._goal:
+        if currCell == m.goal:
             break
         for d in "WNSE":
-            if m.maze_map[currCell][d] == True:
+            if m.mazeMap[currCell][d] == True:
                 if d == "E":
-                    childCell = (currCell[0], currCell[1] + 1)
+                    neighbourCell = (currCell[0], currCell[1] + 1)
                 elif d == "W":
-                    childCell = (currCell[0], currCell[1] - 1)
+                    neighbourCell = (currCell[0], currCell[1] - 1)
                 elif d == "S":
-                    childCell = (currCell[0] + 1, currCell[1])
+                    neighbourCell = (currCell[0] + 1, currCell[1])
                 elif d == "N":
-                    childCell = (currCell[0] - 1, currCell[1])
-                if childCell in visited:
+                    neighbourCell = (currCell[0] - 1, currCell[1])
+                if neighbourCell in visited:
                     continue
-                visited.append(childCell)
-                stack.append(childCell)
-                dfsPath[childCell] = currCell
-    fwdPath = {}
-    cell = m._goal
+                visited.append(neighbourCell)
+                stack.append(neighbourCell)
+                path[neighbourCell] = currCell
+    dfsPath = {}
+    cell = m.goal
     while cell != start:
-        fwdPath[dfsPath[cell]] = cell
-        cell = dfsPath[cell]
-    return search, fwdPath
+        dfsPath[path[cell]] = cell
+        cell = path[cell]
+    return search, dfsPath

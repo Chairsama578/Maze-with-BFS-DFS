@@ -1,33 +1,33 @@
 def BFS(m):
-    start = (m.rows, m.cols)
+    start = (m.numRow, m.numCol)
     queue = [start]
     visited = [start]
-    bfsPath = {}
+    path = {}
     search = []
     while len(queue) > 0:
         # xóa phần tử ở vị trí đầu
         currCell = queue.pop(0)
         search.append(currCell)
-        if currCell == m._goal:
+        if currCell == m.goal:
             break
         for d in "NWSE":
-            if m.maze_map[currCell][d] == True:
+            if m.mazeMap[currCell][d] == True:
                 if d == "E":
-                    childCell = (currCell[0], currCell[1] + 1)
+                    currentCell = (currCell[0], currCell[1] + 1)
                 elif d == "W":
-                    childCell = (currCell[0], currCell[1] - 1)
+                    currentCell = (currCell[0], currCell[1] - 1)
                 elif d == "N":
-                    childCell = (currCell[0] - 1, currCell[1])
+                    currentCell = (currCell[0] - 1, currCell[1])
                 elif d == "S":
-                    childCell = (currCell[0] + 1, currCell[1])
-                if childCell in visited:
+                    currentCell = (currCell[0] + 1, currCell[1])
+                if currentCell in visited:
                     continue
-                queue.append(childCell)
-                visited.append(childCell)
-                bfsPath[childCell] = currCell
-    fwdPath = {}
-    cell = m._goal
+                queue.append(currentCell)
+                visited.append(currentCell)
+                path[currentCell] = currCell
+    bfsPath = {}
+    cell = m.goal
     while cell != start:
-        fwdPath[bfsPath[cell]] = cell
-        cell = bfsPath[cell]
-    return search, fwdPath
+        bfsPath[path[cell]] = cell
+        cell = path[cell]
+    return search, bfsPath

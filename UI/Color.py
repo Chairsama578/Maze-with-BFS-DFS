@@ -6,11 +6,10 @@ from enum import Enum
 
 class COLOR(Enum):
     # màu của maze
-    dark = ("gray11", "white")  # nền đen viền trắng
-    light = ("white", "black")  # nền trắng viền đen
+    dark = ("#000000", "#FFFFFF")  # nền đen viền trắng
+    light = ("#FFFFFF", "#000000")  # nền trắng viền đen
     # màu của của goal
     red = ("red", "red")
-    green = ("green4", "pale green")
     # màu của đường đi
     pink = ("#FF6A88", "#FF99AC")
     blue = ("#E0C3FC", "#8EC5FC")

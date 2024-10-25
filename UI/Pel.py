@@ -11,13 +11,13 @@ class pel:
         self._parentMaze = parentMaze
         self.color = color
         if x is None:
-            x = parentMaze.rows
+            x = parentMaze.numRow
         if y is None:
-            y = parentMaze.cols
+            y = parentMaze.numCol
         self.x = x
         self.y = y
         self._parentMaze._pels.append(self)
-        self.goal = self._parentMaze._goal
+        self.goal = self._parentMaze.goal
         self._body = []
         self.position = (self.x, self.y)
 
