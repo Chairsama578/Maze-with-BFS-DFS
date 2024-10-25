@@ -10,7 +10,7 @@ from Model.BFS import BFS
 from Model.DFS import DFS
 
 # Khởi tạo mê cung 5x5
-m = maze(100, 100)
+m = maze(50, 50)
 
 # Tạo mê cung với phần trăm vòng lặp là 100%
 m.createMaze(difficulty=100)
@@ -24,7 +24,7 @@ b = pel(m)
 
 # Vẽ đường tìm kiếm và đường ngắn nhất
 m.tracePath({a: search}, delay=50)
-m.tracePath({b: path}, delay=0)
+m.tracePath({b: path}, delay=50)
 
 # Hiển thị độ dài của đường ngắn nhất
 l = textLabel(m, 'Length of Shortest Path', len(path) + 1)

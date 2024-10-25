@@ -301,7 +301,7 @@ class maze:
 
         self._win.after(delay, self._tracePathSingle,a,p,delay)    
 
-    def tracePath(self,compass, delay=0):
+    def tracePath(self,compass, delay=50):
         self._tracePathList.append((compass,delay))
         if maze._tracePathList[0][0]==compass: 
             for a,p in compass.items():
