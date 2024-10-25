@@ -10,7 +10,6 @@ class pel:
 
         self._parentMaze = parentMaze
         self.color = color
-        self._orient = 0
         if x is None:
             x = parentMaze.rows
         if y is None:

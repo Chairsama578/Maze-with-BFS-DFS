@@ -10,7 +10,7 @@ from Model.BFS import BFS
 from Model.DFS import DFS
 
 # Khởi tạo mê cung 5x5
-m = maze(5, 5)
+m = maze(10, 10)
 
 # Tạo mê cung với phần trăm vòng lặp là 100%
 m.createMaze(loopPercent=100)

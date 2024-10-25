@@ -32,8 +32,7 @@ class textLabel:
             textvariable=self._var,
             bg="white",
             fg="black",
-            font=("Helvetica bold", 12),
             relief=RIDGE,
         )
         self._var.set(f"{self.title} : {self.value}")
-        self.lab.pack(expand=True, side=LEFT, anchor=NW)
+        self.lab.pack(expand=True, side=RIGHT, anchor=NW)

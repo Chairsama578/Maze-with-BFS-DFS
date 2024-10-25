@@ -53,7 +53,7 @@ class maze:
         if x+1<=self.rows:
             self.maze_map[x+1,y]['N']=1
     
-    def createMaze(self,loopPercent=0,theme:COLOR=COLOR.dark):
+    def createMaze(self,loopPercent=0,theme:COLOR=COLOR.light):
         _stack=[]
         _closed=[]
         self.theme=theme
@@ -234,7 +234,7 @@ class maze:
         elif self.rows>=50 and self.cols>=50:
             k=2
         elif self.rows>=35 and self.cols>=35:
-            k=2.5
+            k=2.5 
         elif self.rows>=22 and self.cols>=22:
             k=3
         self._cell_width=round(min(((scr_height-self.rows-k*self._LabWidth)/(self.rows)),((scr_width-self.cols-k*self._LabWidth)/(self.cols)),90),3)
