@@ -1,7 +1,7 @@
 from tkinter import *
 from collections import *
-from Color import COLOR
-from Maze import *
+from UI.Color import COLOR
+from UI.Maze import *
 
 
 # khởi tạo điểm màu

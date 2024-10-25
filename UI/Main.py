@@ -1,6 +1,6 @@
-from Maze import maze,COLOR,pel, textLabel
-from BFS import BFS
-from DFS import DFS
+from UI.Maze import maze,COLOR,pel, textLabel
+from Model.BFS import BFS
+from Model.DFS import DFS
 m=maze(5,5)
 #Vẽ mê cung
 

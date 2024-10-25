@@ -1,9 +1,9 @@
 import random
 from tkinter import *
 from collections import deque
-from Pel import pel
-from Color import *
-from TextLabel import *
+from UI.Pel import pel
+from UI.Color import *
+from UI.TextLabel import *
 
 class maze: 
     # hàm chính của class maze

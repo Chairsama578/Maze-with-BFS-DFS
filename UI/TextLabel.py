@@ -1,6 +1,6 @@
 from tkinter import *
-from Color import *
-from Pel import *
+from UI.Color import *
+from UI.Pel import *
 
 
 class textLabel:
