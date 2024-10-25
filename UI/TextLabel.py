@@ -27,8 +27,11 @@ class textLabel:
         self.lab = Label(
             self._parentMaze._canvas,
             textvariable=self._var,
+            anchor=CENTER,
             bg="#8EC5FC",
             fg="black",
+        
         )
+        self.lab.config(font=(16))
         self._var.set(f"{self.title} : {self.value}")
-        self.lab.pack()
+        self.lab.pack(pady = 7)

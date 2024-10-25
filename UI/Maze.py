@@ -215,13 +215,13 @@ class maze:
     def _drawMaze(self,theme):
         # Tao Tkinter 
         
-        self._LabWidth= 26
+        self._LabWidth= 40
         self._win=Tk()
         self._win.title('Nhom 5')
         scr_width=self._win.winfo_screenheight()
-        scr_height=self._win.winfo_screenheight()
+        scr_height=self._win.winfo_screenheight() 
         self._win.geometry(f"{scr_width}x{scr_height}+0+0")
-        self._canvas = Canvas(width=scr_width, height=scr_height, bg=theme.value[0]) 
+        self._canvas = Canvas(width=scr_width-10, height=scr_height-10, bg=theme.value[0]) 
         self._canvas.pack(expand=YES, fill=BOTH) 
         # Tính chiều rộng của mê cung
         k=3.25
@@ -237,7 +237,7 @@ class maze:
             k=2.5 
         elif self.numRow>=22 and self.numCol>=22:
             k=3
-        self._cell_width=round(min(((scr_height-self.numRow-k*self._LabWidth)/(self.numRow)),((scr_width-self.numCol-k*self._LabWidth)/(self.numCol)),90),3)
+        self._cell_width=round(min(((scr_height+25-self.numRow-k*self._LabWidth)/(self.numRow)),((scr_width+20-self.numCol-k*self._LabWidth)/(self.numCol)),90),3)
         
         # Tạo dòng cho mê cung
         if self._win is not None:
@@ -301,7 +301,7 @@ class maze:
 
         self._win.after(delay, self._tracePathSingle,a,p,delay)    
 
-    def tracePath(self,compass, delay=300):
+    def tracePath(self,compass, delay=0):
         self._tracePathList.append((compass,delay))
         if maze._tracePathList[0][0]==compass: 
             for a,p in compass.items():
