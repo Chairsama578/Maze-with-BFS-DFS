@@ -1,12 +1,12 @@
 def BFS(m):
     start = (m.rows, m.cols)
-    frontier = [start]
-    explored = [start]
+    queue = [start]
+    visited = [start]
     bfsPath = {}
     search = []
-    while len(frontier) > 0:
+    while len(queue) > 0:
         # xóa phần tử ở vị trí đầu
-        currCell = frontier.pop(0)
+        currCell = queue.pop(0)
         search.append(currCell)
         if currCell == m._goal:
             break
@@ -20,10 +20,10 @@ def BFS(m):
                     childCell = (currCell[0] - 1, currCell[1])
                 elif d == "S":
                     childCell = (currCell[0] + 1, currCell[1])
-                if childCell in explored:
+                if childCell in visited:
                     continue
-                frontier.append(childCell)
-                explored.append(childCell)
+                queue.append(childCell)
+                visited.append(childCell)
                 bfsPath[childCell] = currCell
     fwdPath = {}
     cell = m._goal
