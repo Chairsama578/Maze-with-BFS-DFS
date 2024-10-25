@@ -1,12 +1,12 @@
 def DFS(m):
     start = (m.rows, m.cols)
-    explored = [start]
-    frontier = [start]
+    visited = [start]
+    stack = [start]
     dfsPath = {}
     search = []
-    while len(frontier) > 0:
+    while len(stack) > 0:
         # xóa phần tử ở vị trí cuối
-        currCell = frontier.pop()
+        currCell = stack.pop()
         search.append(currCell)
         if currCell == m._goal:
             break
@@ -20,10 +20,10 @@ def DFS(m):
                     childCell = (currCell[0] + 1, currCell[1])
                 elif d == "N":
                     childCell = (currCell[0] - 1, currCell[1])
-                if childCell in explored:
+                if childCell in visited:
                     continue
-                explored.append(childCell)
-                frontier.append(childCell)
+                visited.append(childCell)
+                stack.append(childCell)
                 dfsPath[childCell] = currCell
     fwdPath = {}
     cell = m._goal
