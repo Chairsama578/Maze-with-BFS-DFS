@@ -13,3 +13,5 @@ class COLOR(Enum):
     # màu của đường đi
     pink = ("#FF6A88", "#FF99AC")
     blue = ("#E0C3FC", "#8EC5FC")
+
+

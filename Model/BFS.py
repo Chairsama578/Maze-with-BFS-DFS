@@ -26,7 +26,7 @@ def BFS(m):
                 visited.append(currentCell)
                 path[currentCell] = currCell
     bfsPath = {}
-    cell = m.goal
+    cell = m.goal;
     while cell != start:
         bfsPath[path[cell]] = cell
         cell = path[cell]

@@ -16,7 +16,7 @@ m = maze(50, 50)
 m.createMaze(difficulty=100)
 
 # Thực hiện tìm kiếm theo DFS
-search, path = DFS(m)
+search, path = BFS(m)
 
 # Tạo các điểm để đánh dấu trong mê cung
 a = pel(m, color=COLOR.blue)

@@ -94,7 +94,6 @@ class maze:
                     self.mazeMap[cellST]['S']=1
                     self.mazeMap[cellND]['N']=1
         def isCyclic(cellST,cellND):
-            # kiểm tra đường dẫn giữa 2 ô
             ans=False
             if cellST[0]==cellND[0]:
                 if cellST[1]>cellND[1]: cellST,cellND=cellND,cellST
@@ -116,11 +115,9 @@ class maze:
        
         _stack.append((x,y))
         _closed.append((x,y))
-        bias=0
 
         while len(_stack) > 0:
             cell = []
-            bias+=1
             if(x , y +1) not in _closed and (x , y+1) in self.maze:
                 cell.append("E")
             if (x , y-1) not in _closed and (x , y-1) in self.maze:
@@ -130,7 +127,6 @@ class maze:
             if (x-1, y ) not in _closed and (x-1 , y) in self.maze:
                 cell.append("N") 
             if len(cell) > 0:    
-                bias=0
                 currentCell = (random.choice(cell))
                 if currentCell == "E":
                     self.openEast(x,y)
